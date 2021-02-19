@@ -1,0 +1,62 @@
+.navbar{
+	border-radius: 0 0 10px 10px;
+}
+.layout-top-nav .wrapper .content-wrapper, .layout-top-nav .wrapper .main-footer, .layout-top-nav .wrapper .main-header {
+	margin: 0 15px;
+}
+
+.content-wrapper{
+	background-color: #fff;
+}
+
+.layout-top-nav .wrapper .brand-image {
+    height: 50px;
+}
+
+.font-weight-light {
+    font-weight: 400!important;
+    /*font-family: poppins;*/
+    margin-left: 12px;
+}
+
+.card{
+	box-shadow: none;
+}
+
+.mb-2{
+    height: 50px;
+}
+
+.navbar>.container{
+    margin: 0 50px;
+}
+.navbar{
+    padding: 3px 8px;
+}
+
+
+/* paralax */
+
+#kanan{
+  animation: kanan linear 0.5s;
+}
+@keyframes kanan{
+  0%{
+    filter: blur(100px);
+    opacity: 0;
+  }
+  100%{
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+/*------*/
+
+
+    .swal2-header {
+      border-bottom: none;
+    padding: 2rem 1rem 10px;
+    }
+    .swal2-content {
+    padding: 0 2rem 2rem;
+}

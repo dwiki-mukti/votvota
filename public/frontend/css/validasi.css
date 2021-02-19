@@ -1,0 +1,136 @@
+.label{
+    display: block;
+    /*font-family: Montserrat-ExtraBold;*/
+    font-size: 24px;
+    color: #333333;
+    line-height: 1.2;
+    text-align: center;
+    padding-bottom: 44px;
+}
+
+.btn-submit{  
+    min-width: 193px;
+    height: 50px;
+    border-radius: 25px;
+    background: #ffd01a;
+    /*font-family: Montserrat-Bold;*/
+    font-size: 15px;
+    line-height: 1.5;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 25px;
+    transition: background-color 100ms ease-in-out, transform 200ms cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    border: none;
+
+    outline: none !important;
+}
+
+.btn-submit:hover {
+    background-color: #efb10a;
+    transform: scale(1.1);
+ }
+
+ .btn-submit:active{
+    background-color: #E8A200;
+    transform: scale(1);
+ }
+
+ .btn-submit span{
+    color: black;
+    font-weight: 600;
+ }
+
+
+.input1{
+    height: 50px;
+    border-radius: 25px;
+    padding: 0 30px;
+    display: block;
+    width: 80%;
+    background: #e6e6e6;
+    /*font-family: Montserrat-Bold;*/
+    font-size: 15px;
+    line-height: 1.5;
+    color: #666666;
+    outline: none;
+    border: none;
+    overflow: visible;
+}
+
+
+/*---------------------------------------------*/
+.wrap-input1 {
+  position: relative;
+  width: 80%;
+  z-index: 1;
+  margin-bottom: 20px;
+}
+
+.input1 {
+  display: block;
+  width: 100%;
+  background: #e6e6e6;
+  /*font-family: Montserrat-Bold;*/
+  font-size: 15px;
+  line-height: 1.5;
+  color: #666666;
+}
+
+.shadow-input1 {
+    border-radius: 25px;
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0px 0px 0px 0px;
+  color: #ffd01a;
+}
+
+.input1:focus + .shadow-input1 {
+  -webkit-animation: anim-shadow 0.5s ease-in-out forwards;
+  animation: anim-shadow 0.5s ease-in-out forwards;
+}
+
+@-webkit-keyframes anim-shadow {
+  to {
+    box-shadow: 0px 0px 80px 30px;
+    opacity: 0;
+  }
+}
+
+@keyframes anim-shadow {
+  to {
+    box-shadow: 0px 0px 80px 30px;
+    opacity: 0;
+  }
+}
+
+
+/*-----------------------*/
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.bungkus{
+    display: flex;
+    justify-content: center;
+}
+
+
+@media (max-width: 992px) {
+  .nol {
+    display: none;
+  }
+}
