@@ -15,12 +15,11 @@ class CreateVotingsTable extends Migration
     {
         Schema::create('votings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('judul');
-            $table->string('status')->nullable();
-            $table->integer('total_peserta');
-            $table->integer('golput')->nullable();
+            $table->string('title');
+            $table->string('slug')->unique()->nullable();
+            $table->integer('end_at')->nullable();
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
         });
     }
 

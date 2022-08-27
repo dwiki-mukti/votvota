@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Student;
+use App\Candidate;
 use Illuminate\Http\Request;
 
-class StudentController extends Controller
+class CandidateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,16 +35,19 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+    	request()->validate([
+    		'foto'=>'mimes:jpg,jpeg,png'
+    	]);
+    	return redirect('/admin');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Student  $student
+     * @param  \App\Candidate  $candidate
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show(Candidate $candidate)
     {
         //
     }
@@ -52,10 +55,10 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Student  $student
+     * @param  \App\Candidate  $candidate
      * @return \Illuminate\Http\Response
      */
-    public function edit(Student $student)
+    public function edit(Candidate $candidate)
     {
         //
     }
@@ -64,10 +67,10 @@ class StudentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Student  $student
+     * @param  \App\Candidate  $candidate
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, Candidate $candidate)
     {
         //
     }
@@ -75,10 +78,10 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Student  $student
+     * @param  \App\Candidate  $candidate
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Student $student)
+    public function destroy(Candidate $candidate)
     {
         //
     }
