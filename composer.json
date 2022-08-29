@@ -40,7 +40,8 @@
             "database/factories"
         ],
         "files": [
-            "app/Helpers/UniqId.php"
+            "app/Helpers/Helper.php",
+            "app/Helpers/PublicVar.php"
         ]
     },
     "autoload-dev": {

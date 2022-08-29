@@ -16,13 +16,13 @@ class CreateVotersTable extends Migration
         Schema::create('voters', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('voting_id');
-            $table->unsignedBigInteger('student_id');
-            $table->string('status')->default(0);
+            $table->unsignedBigInteger('candidate_id')->nullable();
+            $table->string('token')->unique();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('voting_id')->references('id')->on('votings')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('candidate_id')->references('id')->on('candidates')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 

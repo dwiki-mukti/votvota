@@ -16,8 +16,15 @@ class Voting extends Model
     protected $fillable = [
         'title',
         'slug',
+        'description',
         'end_at'
     ];
+
+
+    public function Rcandidate()
+    {
+        return $this->hasMany(new Candidate, 'voting_id', 'id');
+    }
 
 
     // public function sluggable(): array

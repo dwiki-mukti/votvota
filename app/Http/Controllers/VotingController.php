@@ -2,97 +2,142 @@
 
 namespace App\Http\Controllers;
 
+use App\Voting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\voting;
-use App\Kandidat;
-use App\Student;
 
 class VotingController extends Controller
 {
-        /**
-     * Create a new controller instance.
+    /**
+     * Display a listing of the resource.
      *
-     * @return void
+     * @return \Illuminate\Http\Response
      */
-    public function __construct()
+    public function index()
     {
-        $this->middleware('auth');
-    }
-    
-    function index()
-    {
-    	$voting=voting::all();
-
-        if ($voting->count()===1) {
-            $kandidat=Kandidat::where('id_voting','=',$voting[0]->id)->get();
-            $students=Student::where('status','=',$voting[0]->id)->get();
-            $total=count(Student::all());
-            $student=$total-count($students);
-
-            if ($voting[0]->status==='berlangsung') {
-                return view('/home/berlangsung',['voting'=>$voting,'kandidat'=>$kandidat,'student'=>$student,'total'=>$total]);
-            }else{
-                return view('/home/index',['voting'=>$voting,'kandidat'=>$kandidat]);
-            }
-
-        }else{
-            return view('/home/landing');
-        }
+        $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
+                        ->orWhereNull('end_at')
+                        ->latest('id')
+                        ->first();
+        $votes = Voting::where('end_at', '<', Carbon::now()->timestamp)->get();
+        return view('voting.index', compact('currentVote', 'votes'));
     }
 
-        function create(Request $request)
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
     {
-    	$voting=new voting;
-    	$voting->judul=$request->judul;
-        $peserta=count(Student::all());
-        $voting->total_peserta=$peserta;
-    	$voting->save();
-    	return redirect()->back();
+        return view('voting.setData');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        request()->validate([
+            'title' => 'required|string'
+        ]);
+
+        Voting::create($request->except('end_at'));
+        return redirect()->route('voting.index');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $currentVote = Voting::where( fn($q) => (
+            $q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')   
+        ))
+        ->where('id', $id)
+        ->firstOrFail();
+
+        return view('voting.setData', compact('currentVote'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $currentVote = Voting::where( fn($q) => (
+            $q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')   
+        ))
+        ->where('id', $id)
+        ->firstOrFail();
+
+        $currentVote->update($request->except('end_at'));
+        return redirect()->route('voting.index');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $currentVote = Voting::findOrFail($id);
+        $currentVote->delete();
+
+        return back();
     }
 
 
-    function edit(Request $request)
+    public function start(Request $request, $id)
     {
-        $voting=voting::find($request->id);
-        $voting->judul=$request->judul;
-        $voting->save();
-        return redirect()->back();
+        $currentVote = Voting::where( fn($q) => (
+            $q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')   
+        ))->where('id', $id)
+        ->firstOrFail();
+
+        $currentVote->update(['end_at' => Carbon::parse($request->end_at)->timestamp]);
+        return back();
     }
 
-    function start(request $request)
-    {
-        $voting=voting::find($request->id);
-        $voting->status='berlangsung';
-        $voting->save();
-        return redirect()->back();
-    }
 
-    function stop(Request $request)
+    public function end($id)
     {
-        $students=Student::where('status','=',$request->id)->get();
-        $total=count(Student::all());
-        $golput=$total-count($students);
+        $currentVote = Voting::where( fn($q) => (
+            $q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')   
+        ))->where('id', $id)
+        ->firstOrFail();
 
-        $voting=voting::find($request->id);
-        $voting->status='selesai';
-        $voting->golput=$golput;
-        $voting->save();
-        $voting->delete();
-        return redirect()->back();
-    }
+        $currentVote->update([
+            'end_at' => Carbon::now()->timestamp
+        ]);
 
-    function delete(Request $request)
-    {
-        $voting=voting::find($request->id);
-        $voting->status='batal';
-        $voting->save();
-        $voting->delete();
-        return redirect()->back();
-    }
-
-    function golput($id)
-    {
-        $siswa=Student::where('status','!=',$id)->get();
-        return view('/home/golput',['siswa'=>$siswa]);
+        return back();
     }
 }

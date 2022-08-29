@@ -16,16 +16,18 @@ class CreateCandidatesTable extends Migration
         Schema::create('candidates', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('voting_id');
-            $table->unsignedBigInteger('student_id');
-            $table->string('foto');
-            $table->text('visi');
-            $table->text('misi');
-            $table->string('total_vote')->nullable(); //encrypt total vote
+            $table->unsignedBigInteger('leader_id');
+            $table->string('leader_image');
+            $table->unsignedBigInteger('co_leader_id')->nullable();
+            $table->string('co_leader_image');
+            $table->text('visi')->nullable();
+            $table->text('misi')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('voting_id')->references('id')->on('votings')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('leader_id')->references('id')->on('students')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('co_leader_id')->references('id')->on('students')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 

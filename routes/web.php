@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,55 +15,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// frontend
-Route::get('/', 'frontendController@index')->name('home');
-Route::post('/', 'frontendController@vote');
-Route::put('/', 'frontendController@validasi');
+
+Route::group(['middleware'=>'guest'], function () {
+	Route::resource('login', 'AuthController')->only(['index', 'store']);
+});
 
 
-Auth::routes();
-Route::group(['middleware'=>'auth'], function () {
-
-	// akun
-	Route::get('/manage-account', 'AuthController@edit');
-	Route::post('/manage-account', 'AuthController@prosesedit');
-
-	// home
-	Route::get('/admin', 'VotingController@index');
-	Route::post('/admin', 'VotingController@create');
-	Route::put('/admin', 'VotingController@edit');
-	Route::delete('/admin', 'VotingController@delete');
-	Route::post('/start-voting', 'VotingController@start');
-	Route::post('/stop-voting', 'VotingController@stop');
-	Route::get('/{id}/belum-memilih', 'VotingController@golput');
-
-	// kandidat
-	Route::get('/kandidat', function(){
-		return view('kandidat/create_kandidat');
-	});
-	Route::get('/live', 'KandidatController@search');
-	Route::get('/kandidat/{id}', 'KandidatController@edit');
-	Route::post('/kandidat', 'KandidatController@store');
-	Route::put('/kandidat', 'KandidatController@prosesedit');
-	Route::delete('/kandidat', 'KandidatController@delete');
+// 'middleware'=>'auth'
+Route::group([], function () {
+	Route::resource('/voting', 'VotingController')->except(['show']);
+	Route::post('/voting-action/{id}', 'VotingController@start')->name('voting.start');
+	Route::delete('/voting-action/{id}', 'VotingController@end')->name('voting.end');
+	
+	Route::resource('/candidate', 'CandidateController')->except([ 'index', 'show']);
 
 
-	// siswa
-	Route::get('/siswa', 'StudentController@index');
-	Route::get('/tambah_siswa', function () {
-	    return view('siswa.create_siswa');
-	});
-	Route::post('/tambah_siswa', 'StudentController@store');
-	Route::get('/edit_siswa/{id}', 'StudentController@edit');
-	Route::post('/edit_siswa/{id}', 'StudentController@prosesedit');
-	Route::delete('/siswa', 'StudentController@delete')->name('hapus');
-
-
-	// history
-	Route::get('/history', 'HistoryController@index');
-	Route::get('/detail_history/{id}', 'HistoryController@detail');
-
-
+	Route::post('logout', 'AuthController@logout')->name('logout');
 });
 
 

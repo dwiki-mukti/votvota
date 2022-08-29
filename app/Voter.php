@@ -12,7 +12,7 @@ class Voter extends Model
 
     protected $fillable = [
         'voting_id',
-        'student_id',
-        'status'
+        'candidate_id',
+        'token'
     ];
 }

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Candidate;
+use App\Student;
+use App\Voting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CandidateController extends Controller
@@ -24,7 +27,8 @@ class CandidateController extends Controller
      */
     public function create()
     {
-        //
+        $students = Student::whereBetween('batch', [1, 3])->get();
+        return view('candidate.setData', compact('students'));
     }
 
     /**
@@ -35,10 +39,33 @@ class CandidateController extends Controller
      */
     public function store(Request $request)
     {
-    	request()->validate([
-    		'foto'=>'mimes:jpg,jpeg,png'
-    	]);
-    	return redirect('/admin');
+        # init
+        $candidate = new Candidate();
+        $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
+                        ->orWhereNull('end_at')
+                        ->latest('id')
+                        ->firstOrFail(['id']);
+
+        #validate
+    	request()->validate($candidate->rules);
+
+        # store data
+        $val = $request->except(['voting_id']);
+        if ($request->hasFile('leader_image')) {
+            $image_name =  date("Ymdhis") . "_leader_image." . $request->file('leader_image')->extension();
+            $request->file('leader_image')->storeAs('/images/candidate/leader_image', $image_name, 'public');
+            $val["leader_image"] = 'images/news/leader_image/' . $image_name;
+        }
+        if ($request->hasFile('co_leader_image')) {
+            $image_name =  date("Ymdhis") . "_co_leader_image." . $request->file('co_leader_image')->extension();
+            $request->file('co_leader_image')->storeAs('/images/candidate/co_leader_image', $image_name, 'public');
+            $val["co_leader_image"] = 'images/news/co_leader_image/' . $image_name;
+        }
+        $val['voting_id'] = $currentVote->id;
+        $candidate->create($val);
+                        
+        # return
+        return redirect()->route('voting.index');
     }
 
     /**
@@ -47,7 +74,7 @@ class CandidateController extends Controller
      * @param  \App\Candidate  $candidate
      * @return \Illuminate\Http\Response
      */
-    public function show(Candidate $candidate)
+    public function show($id)
     {
         //
     }
@@ -58,9 +85,17 @@ class CandidateController extends Controller
      * @param  \App\Candidate  $candidate
      * @return \Illuminate\Http\Response
      */
-    public function edit(Candidate $candidate)
+    public function edit($id)
     {
-        //
+        $candidate = Candidate::whereHas('Rvoting', fn($q)=>(
+            $q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')
+        ))
+        ->where('id', $id)
+        ->firstOrFail();
+
+        $students = Student::whereBetween('batch', [1, 3])->get();
+        return view('candidate.setData', compact('candidate', 'students'));
     }
 
     /**
@@ -70,9 +105,38 @@ class CandidateController extends Controller
      * @param  \App\Candidate  $candidate
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Candidate $candidate)
+    public function update(Request $request, $id)
     {
-        //
+        # init
+        $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')
+            ->latest('id')
+            ->firstOrFail(['id']);
+        $candidate = Candidate::where([
+            'id' => $id,
+            'voting_id' => $currentVote->id
+        ])->firstOrFail();
+
+        #validate
+    	request()->validate($candidate->rules);
+
+        # store data
+        $val = $request->except(['voting_id']);
+        if ($request->hasFile('leader_image')) {
+            $image_name =  date("Ymdhis") . "_leader_image." . $request->file('leader_image')->extension();
+            $request->file('leader_image')->storeAs('/images/candidate/leader_image', $image_name, 'public');
+            $val["leader_image"] = 'images/news/leader_image/' . $image_name;
+        }
+        if ($request->hasFile('co_leader_image')) {
+            $image_name =  date("Ymdhis") . "_co_leader_image." . $request->file('co_leader_image')->extension();
+            $request->file('co_leader_image')->storeAs('/images/candidate/co_leader_image', $image_name, 'public');
+            $val["co_leader_image"] = 'images/news/co_leader_image/' . $image_name;
+        }
+
+        $candidate->update($val);
+                        
+        # return
+        return redirect()->route('voting.index');
     }
 
     /**
@@ -81,8 +145,22 @@ class CandidateController extends Controller
      * @param  \App\Candidate  $candidate
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Candidate $candidate)
+    public function destroy($id)
     {
-        //
+        # init
+        $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')
+            ->latest('id')
+            ->firstOrFail(['id']);
+        $candidate = Candidate::where([
+            'id' => $id,
+            'voting_id' => $currentVote->id
+        ])->firstOrFail();
+
+        # delete
+        $candidate->delete();
+
+        # return
+        return back();
     }
 }

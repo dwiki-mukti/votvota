@@ -17,6 +17,7 @@ class CreateVotingsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('slug')->unique()->nullable();
+            $table->text('description')->nullable();
             $table->integer('end_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
