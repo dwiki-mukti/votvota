@@ -1,7 +1,8 @@
 
 #### TODO ####
-
-
+# redis on vote
+# realtime chart @admin
+# check end_at @all voting
 
 
 
@@ -18,13 +19,5 @@
 ### TASK ADMIN ###
 # change password
 
-### TASK CLIENT ###
-# login token
-# vote page
-
 ### FLOW CLIENT ###
-- page input
-- input token => chack on controller
-- vote
 - reinput token
-- alert finish @page input
