@@ -15,13 +15,14 @@
     {{-- <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> --}}
 
     <!-- basic style -->
+    <link rel="stylesheet" href="{{ asset('adminlte/custom/default.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
 
     @yield('style')
 </head>
-
-<body class="hold-transition sidebar-mini layout-fixed">
+{{--  sidebar-mini layout-fixed --}}
+<body class="hold-transition layout-top-nav">
     <div class="wrapper">
 
         <!-- Preloader -->
@@ -30,23 +31,19 @@
         </div> -->
 
         @include('layouts.components.navbar')
-        @include('layouts.components.sidebar')
+        {{-- @include('layouts.components.sidebar') --}}
 
         <div class="content-wrapper">
             @yield('content')
         </div>
 
-        <!-- <footer class="main-footer">
+        <footer class="main-footer mt-4">
             <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
                 <b>Version</b> 3.2.0
             </div>
-        </footer> -->
-
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
+        </footer>
     </div>
 
 

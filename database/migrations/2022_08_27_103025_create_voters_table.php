@@ -17,7 +17,7 @@ class CreateVotersTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('voting_id');
             $table->unsignedBigInteger('candidate_id')->nullable();
-            $table->string('token')->unique();
+            $table->text('token')->unique();
             $table->timestamps();
             $table->softDeletes();
 

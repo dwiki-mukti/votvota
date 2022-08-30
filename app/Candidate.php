@@ -18,6 +18,10 @@ class Candidate extends Model
         'misi' => 'string|nullable'
     ];
 
+    public function getTitleAttribute()
+    {
+        return ($this->Rleader->name ?? null) . ' & ' .( $this->Rleader->name ?? null);
+    }
 
     public function Rleader()
     {

@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Candidate;
+use App\Student;
+use App\Voter;
 use App\Voting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\VoteTokenExport;
+use Illuminate\Support\Facades\Session;
 
 class VotingController extends Controller
 {
@@ -19,8 +26,7 @@ class VotingController extends Controller
                         ->orWhereNull('end_at')
                         ->latest('id')
                         ->first();
-        $votes = Voting::where('end_at', '<', Carbon::now()->timestamp)->get();
-        return view('voting.index', compact('currentVote', 'votes'));
+        return view('voting.index', compact('currentVote'));
     }
 
     /**
@@ -30,7 +36,15 @@ class VotingController extends Controller
      */
     public function create()
     {
-        return view('voting.setData');
+        $checkCurrentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
+                        ->orWhereNull('end_at')
+                        ->latest('id')
+                        ->exists();
+        if ($checkCurrentVote) {
+            return redirect()->route('voting.index');
+        }else{
+            return view('voting.setData');
+        }
     }
 
     /**
@@ -45,7 +59,17 @@ class VotingController extends Controller
             'title' => 'required|string'
         ]);
 
-        Voting::create($request->except('end_at'));
+        $voting = Voting::create($request->except('end_at'));
+
+        $students = Student::whereBetween('batch', [1, 3])->count();
+        for ($voter=1; $voter <= $students; $voter++) {
+            Voter::create([
+                'voting_id' => $voting->id,
+                'candidate_id' => null,
+                'token' => Str::random(4)
+            ]);
+        }
+        Session::flash('isDownloadTokens', 'download-token');
         return redirect()->route('voting.index');
     }
 
@@ -57,7 +81,14 @@ class VotingController extends Controller
      */
     public function show($id)
     {
-        //
+        if ($id != 'download-token') {
+            return abort(404);
+        }
+        $voting = Voting::where('end_at', '>', Carbon::now()->timestamp)
+                        ->orWhereNull('end_at')
+                        ->latest('id')
+                        ->firstOrFail();
+		return Excel::download(new VoteTokenExport($voting->Rvoter->pluck('token')), ('token voting'. $voting->title .'.xlsx'));
     }
 
     /**

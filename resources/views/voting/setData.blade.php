@@ -2,7 +2,7 @@
 
 @section('content')
 <section class="content-header">
-    <div class="container-fluid">
+    <div class="container">
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h2>{{ isset($currentVote) ? 'Edit Voting' : 'Buat Voting Baru'}}</h2>
@@ -18,7 +18,7 @@
 </section>
 
 <section class="content">
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -56,6 +56,6 @@
 
 @section('script')
 <script type="text/javascript">
-    $("#sidbarHome").addClass('active')
+    $("#sidebarVoting").addClass('active')
 </script>
 @endsection

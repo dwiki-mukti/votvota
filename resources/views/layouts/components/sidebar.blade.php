@@ -8,7 +8,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-header">MENU</li>
                 <li class="nav-item">
-                    <a href="{{ Route('voting.index') }}" class="nav-link" id="sidbarHome">
+                    <a href="{{ Route('voting.index') }}" class="nav-link" id="sidebarVoting">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
                             Voting Control

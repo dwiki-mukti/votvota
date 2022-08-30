@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Student;
+use App\Voting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class StudentController extends Controller
+class HistoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $votes = Voting::where('end_at', '<', Carbon::now()->timestamp)->get();
+        return view('history.index', compact('votes'));
     }
 
     /**
@@ -41,21 +43,27 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Student  $student
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show($slug)
     {
-        //
+        $currentVote = Voting::where( fn($q) => (
+            $q->where('end_at', '<', Carbon::now()->timestamp)
+            ->orWhereNotNull('end_at')   
+        ))->where('slug', $slug)
+        ->firstOrFail();
+
+        return view('history.show', compact('currentVote'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Student  $student
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Student $student)
+    public function edit($id)
     {
         //
     }
@@ -64,10 +72,10 @@ class StudentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Student  $student
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -75,10 +83,10 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Student  $student
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Student $student)
+    public function destroy($id)
     {
         //
     }

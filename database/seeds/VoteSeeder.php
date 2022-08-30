@@ -7,7 +7,6 @@ use App\Voting;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class VoteSeeder extends Seeder
@@ -51,7 +50,7 @@ class VoteSeeder extends Seeder
                 Voter::create([
                     'voting_id' => $voting->id,
                     'candidate_id' => $randCandidate->id,
-                    'token' => Hash::make(Str::random(4))
+                    'token' => Str::random(4) // encrypt 2 arah
                 ]);
             }
         }

@@ -1,3 +1,30 @@
 
 #### TODO ####
-# report progress voting (chart vote & table candidate)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### TASK ADMIN ###
+# change password
+
+### TASK CLIENT ###
+# login token
+# vote page
+
+### FLOW CLIENT ###
+- page input
+- input token => chack on controller
+- vote
+- reinput token
+- alert finish @page input

@@ -7,19 +7,27 @@
                 <a href="{{ Route('voting.edit', $currentVote->id) }}"><i class="fas fa-edit"></i></a>
             </div>
             <div class="mb-2">{{ $currentVote->description }}</div>
-            <div class="d-flex justify-content-center" style="gap: .2rem">
-                <button {{ ($currentVote->Rcandidate->count() < 2) ? 'disabled' : '' }} class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#edit-voting">
-                    <i class="fas fa-play"></i>
-                    <span>Mulai</span>
-                </button>
-                <form action="{{ Route('voting.destroy', $currentVote->id) }}" method="POST" onsubmit="return confirm('Data setup voting yang dihapus tidak dapat dikembalikan. Tetap hapus?')">
-                    @csrf
-                    @method('delete')
-                    <button class="btn btn-sm btn-outline-danger">
-                        <i class="fas fa-trash-alt"></i>
-                        <span>Batalkan</span>
+            <div>
+                <div class="mb-1">
+                    <a href="{{ Route('voting.show', 'download-token') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-file-download"></i>
+                        <span>Unduh Token Pemilih</span>
+                    </a>
+                </div>
+                <div class="d-flex justify-content-center" style="gap: .2rem">
+                    <button {{ ($currentVote->Rcandidate->count() < 2) ? 'disabled' : '' }} class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#edit-voting">
+                        <i class="fas fa-play"></i>
+                        <span>Mulai</span>
                     </button>
-                </form>
+                    <form action="{{ Route('voting.destroy', $currentVote->id) }}" method="POST" onsubmit="return confirm('Data setup voting yang dihapus tidak dapat dikembalikan. Tetap hapus?')">
+                        @csrf
+                        @method('delete')
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>Batalkan</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -56,7 +64,7 @@
 <!-- modal -->
 @if (!($currentVote->Rcandidate->count() < 2))
 <div class="modal fade" id="edit-voting">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Mulai Voting</h4>

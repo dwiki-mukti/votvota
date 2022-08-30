@@ -16,23 +16,29 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::group(['middleware'=>'guest'], function () {
+Route::get('/', fn () => redirect()->route('main.index'));
+Route::group(['middleware' => 'guest'], function () {
 	Route::resource('login', 'AuthController')->only(['index', 'store']);
 });
 
-
-// 'middleware'=>'auth'
-Route::group([], function () {
-	Route::resource('/voting', 'VotingController')->except(['show']);
+Route::group([
+	'middleware' => ['auth', 'roles:Admin'],
+	'prefix' => '/admin'
+], function () {
+	Route::get('/', fn () => redirect()->route('voting.index'));
 	Route::post('/voting-action/{id}', 'VotingController@start')->name('voting.start');
 	Route::delete('/voting-action/{id}', 'VotingController@end')->name('voting.end');
-	
-	Route::resource('/candidate', 'CandidateController')->except([ 'index', 'show']);
-
-
 	Route::post('logout', 'AuthController@logout')->name('logout');
+
+	Route::resource('/voting', 'VotingController');
+	Route::resource('/candidate', 'CandidateController')->except(['index', 'show']);
+	Route::resource('/riwayat', 'HistoryController')->only(['index', 'show']);
 });
 
+Route::group(['middleware' => 'voter:guard'], function () {
+	Route::resource('/main', 'ClientController')->only(['show', 'update', 'destroy']);
+});
 
-
-
+Route::group(['middleware' => 'voter:guest'], function () {
+	Route::resource('/main', 'ClientController')->only(['index', 'store']);
+});

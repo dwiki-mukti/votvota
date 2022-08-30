@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="content-header">
-        <div class="container-fluid">
+        <div class="container">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Pilih Kandidat</h1>
@@ -19,7 +19,7 @@
 
 
     <section class="content">
-        <div class="container-fluid">
+        <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -111,7 +111,7 @@
 @section('script')
     <script src="{{ asset('adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     <script type="text/javascript">
-        $('#sidbarHome').addClass('active')
+        $('#sidebarVoting').addClass('active')
         $(function () {
             bsCustomFileInput.init();
         });

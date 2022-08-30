@@ -49,4 +49,12 @@ class AuthController extends Controller
 		#return
         return redirect()->route('voting.index');
 	}
+
+
+	public function logout(Request $request)
+	{
+        $request->session()->flush();
+        Auth::logout();
+        return redirect()->route('login.index');
+	}
 }
