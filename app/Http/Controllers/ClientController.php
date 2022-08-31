@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\IncrementVote;
 use App\User;
 use App\Voter;
 use App\Voting;
@@ -154,7 +155,7 @@ class ClientController extends Controller
         $voter->save();
 
         # todo redis add count vote
-        // code...
+        IncrementVote::dispatch($request->candidate_id)->onQueue('increment_vote');
 
         # return
         return redirect()->route('main.show', 'done')->with(['success' => 'Terimakasih atas partisipasinya!']);
