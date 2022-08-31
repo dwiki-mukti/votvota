@@ -46,7 +46,8 @@ class Candidate extends Model
         'co_leader_id',
         'co_leader_image',
         'visi',
-        'misi'
+        'misi',
+        'total_votes'
     ];
 
 }

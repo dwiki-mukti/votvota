@@ -15,30 +15,51 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::get('/', fn () => redirect()->route('main.index'));
 Route::group(['middleware' => 'guest'], function () {
 	Route::resource('login', 'AuthController')->only(['index', 'store']);
+	Route::resource('/main', 'ClientController')->only(['index', 'store']);
 });
 
 Route::group([
-	'middleware' => ['auth', 'roles:Admin'],
-	'prefix' => '/admin'
+	'middleware' => 'auth',
 ], function () {
-	Route::get('/', fn () => redirect()->route('voting.index'));
-	Route::post('/voting-action/{id}', 'VotingController@start')->name('voting.start');
-	Route::delete('/voting-action/{id}', 'VotingController@end')->name('voting.end');
+	# all
 	Route::post('logout', 'AuthController@logout')->name('logout');
 
-	Route::resource('/voting', 'VotingController');
-	Route::resource('/candidate', 'CandidateController')->except(['index', 'show']);
-	Route::resource('/riwayat', 'HistoryController')->only(['index', 'show']);
+	# admin
+	Route::group([
+		'middleware' => ['roles:Admin'],
+		'prefix' => '/admin'
+	], function () {
+		Route::get('/', fn () => redirect()->route('voting.index'));
+		Route::post('/voting-action/{id}', 'VotingController@start')->name('voting.start');
+		Route::delete('/voting-action/{id}', 'VotingController@end')->name('voting.end');
+
+		Route::resource('/voting', 'VotingController')->except(['show']);
+		Route::resource('/candidate', 'CandidateController')->except(['index', 'show']);
+		Route::resource('/riwayat', 'HistoryController')->only(['index', 'show']);
+	});
+
+	# client
+	Route::group(['middleware' => ['roles:Siswa']], function () {
+		Route::resource('/main', 'ClientController')->only(['show', 'update']);
+	});
 });
 
-Route::group(['middleware' => 'voter:guard'], function () {
-	Route::resource('/main', 'ClientController')->only(['show', 'update', 'destroy']);
-});
 
-Route::group(['middleware' => 'voter:guest'], function () {
-	Route::resource('/main', 'ClientController')->only(['index', 'store']);
-});
+
+
+Route::get('/', function () {
+	switch (Auth::user()->role ?? null) {
+		case 'Admin':
+			return redirect()->route('voting.index');
+			break;
+		case 'Siswa':
+			return redirect()->route('main.show', 'voting');
+			break;
+		default:
+			Auth::logout();
+			return redirect()->route('main.index');
+			break;
+	}
+})->name('home');

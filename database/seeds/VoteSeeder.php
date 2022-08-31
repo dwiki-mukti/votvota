@@ -18,20 +18,20 @@ class VoteSeeder extends Seeder
      */
     public function run()
     {
-    	$faker= Faker::create('id_ID');
+        $faker = Faker::create('id_ID');
 
-        for ($v=0; $v < 5; $v++) {
+        for ($v = 0; $v < 5; $v++) {
             $voting = Voting::create([
                 'title' => $faker->sentence,
                 'end_at' => Carbon::now()->timestamp
             ]);
 
-            $students = Student::whereBetween('batch', [1, 3]);
+            $students = Student::whereNull('thn_lulus');
 
             // candidate
-            for ($i=0; $i < rand(1, 4); $i++) {
+            for ($i = 0; $i < rand(1, 4); $i++) {
                 $candidates = $students->inRandomOrder('id')
-                                ->limit(2)->get(['id']);
+                    ->limit(2)->get(['id']);
                 Candidate::create([
                     'voting_id' => $voting->id,
                     'leader_id' => $candidates[0]->id,
@@ -42,15 +42,19 @@ class VoteSeeder extends Seeder
                     'misi' => $faker->text,
                 ]);
             }
-            
+
             // voter
-            $total_voters = $students->count();
-            for ($voter=1; $voter <= $total_voters; $voter++) {
-                $randCandidate = Candidate::where('voting_id', $voting->id)->inRandomOrder('id')->first(['id']);
-                Voter::create([
+            $voters = $students->get();
+            foreach ($voters as $voter) {
+                Candidate::where('voting_id', $voting->id)
+                    ->inRandomOrder('id')
+                    ->first()
+                    ->increment('total_votes');
+
+                Voter::updateOrCreate([
+                    'student_id' => $voter->id,
+                ], [
                     'voting_id' => $voting->id,
-                    'candidate_id' => $randCandidate->id,
-                    'token' => Str::random(4) // encrypt 2 arah
                 ]);
             }
         }

@@ -31,15 +31,18 @@
                                 <img src="" class="w-100 mb-1" style="height: 200px">
                             </div>
                             <div class="col-md-6">
-                                <form action="{{ Route('voting.store') }}" method="POST" onsubmit="return confirm('Buat pemungutan suara ini?')">
+                                <form action="{{ isset($currentVote) ? Route('voting.update', $currentVote->id) : Route('voting.store') }}" method="POST" onsubmit="return confirm('Buat pemungutan suara ini?')">
                                     @csrf
+                                    @isset($currentVote)
+                                        @method('PUT')
+                                    @endisset
                                     <div class="form-group">
                                         <label for="title">Nama Voting</label>
                                         <input value="{{ old('title', ($currentVote->title ?? '')) }}" class="form-control" id="title" name="title" placeholder="Ex: Pemilihan Ketua Osis">
                                     </div>
                                     <div class="form-group">
                                         <label for="description">Keterangan <small>(Opsional)</small></label>
-                                        <textarea class="form-control" id="description" name="description">{{ old('title', ($currentVote->description ?? '')) }}</textarea>
+                                        <textarea class="form-control" id="description" name="description">{{ old('description', ($currentVote->description ?? '')) }}</textarea>
                                     </div>
                                     <button class="btn btn-primary float-right">Submit</button>
                                 </form>

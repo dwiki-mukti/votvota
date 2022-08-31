@@ -18,26 +18,12 @@ class Voting extends Model
         'end_at'
     ];
 
-    public function getDataChartsAttribute()
+    public function getGolputAttribute()
     {
-        $candidates = Candidate::where('voting_id', $this->attributes['id'])->get();
-        $return = [];
-        foreach ($candidates as $candidate) {
-            $return['count_votes'][] = Voter::where([
-                ['voting_id', $this->attributes['id']],
-                ['candidate_id', $candidate->id]
-            ])->count();
-            $return['label'][] = $candidate->title;
-        }
-        $return['count_votes'][] = Voter::where([
-            ['voting_id', $this->attributes['id']],
-            ['candidate_id', null]
-        ])->count();
-        $return['label'][] = 'Undefined';
-
-        return $return;
+        $students = Student::whereNull('thn_lulus')->count();
+        $voter = $this->Rcandidate->sum('total_votes');
+        return $students - $voter;
     }
-
 
     public function Rcandidate()
     {
@@ -48,17 +34,6 @@ class Voting extends Model
     {
         return $this->hasMany(new Voter, 'voting_id', 'id');
     }
-
-
-    /*
-    public static function boot()
-    {
-        parent::boot();
-        static::creating(function ($voting) {
-        });
-    }
-    */
-
 
     public function sluggable(): array
     {

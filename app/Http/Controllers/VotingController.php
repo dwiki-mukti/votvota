@@ -23,9 +23,9 @@ class VotingController extends Controller
     public function index()
     {
         $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
-                        ->orWhereNull('end_at')
-                        ->latest('id')
-                        ->first();
+            ->orWhereNull('end_at')
+            ->latest('id')
+            ->first();
         return view('voting.index', compact('currentVote'));
     }
 
@@ -37,12 +37,12 @@ class VotingController extends Controller
     public function create()
     {
         $checkCurrentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
-                        ->orWhereNull('end_at')
-                        ->latest('id')
-                        ->exists();
+            ->orWhereNull('end_at')
+            ->latest('id')
+            ->exists();
         if ($checkCurrentVote) {
             return redirect()->route('voting.index');
-        }else{
+        } else {
             return view('voting.setData');
         }
     }
@@ -59,17 +59,8 @@ class VotingController extends Controller
             'title' => 'required|string'
         ]);
 
-        $voting = Voting::create($request->except('end_at'));
+        Voting::create($request->except('end_at'));
 
-        $students = Student::whereBetween('batch', [1, 3])->count();
-        for ($voter=1; $voter <= $students; $voter++) {
-            Voter::create([
-                'voting_id' => $voting->id,
-                'candidate_id' => null,
-                'token' => Str::random(4)
-            ]);
-        }
-        Session::flash('isDownloadTokens', 'download-token');
         return redirect()->route('voting.index');
     }
 
@@ -81,14 +72,7 @@ class VotingController extends Controller
      */
     public function show($id)
     {
-        if ($id != 'download-token') {
-            return abort(404);
-        }
-        $voting = Voting::where('end_at', '>', Carbon::now()->timestamp)
-                        ->orWhereNull('end_at')
-                        ->latest('id')
-                        ->firstOrFail();
-		return Excel::download(new VoteTokenExport($voting->Rvoter->pluck('token')), ('token voting'. $voting->title .'.xlsx'));
+        // 
     }
 
     /**
@@ -99,12 +83,11 @@ class VotingController extends Controller
      */
     public function edit($id)
     {
-        $currentVote = Voting::where( fn($q) => (
-            $q->where('end_at', '>', Carbon::now()->timestamp)
-            ->orWhereNull('end_at')   
+        $currentVote = Voting::where(fn ($q) => ($q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')
         ))
-        ->where('id', $id)
-        ->firstOrFail();
+            ->where('id', $id)
+            ->firstOrFail();
 
         return view('voting.setData', compact('currentVote'));
     }
@@ -118,12 +101,11 @@ class VotingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $currentVote = Voting::where( fn($q) => (
-            $q->where('end_at', '>', Carbon::now()->timestamp)
-            ->orWhereNull('end_at')   
+        $currentVote = Voting::where(fn ($q) => ($q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')
         ))
-        ->where('id', $id)
-        ->firstOrFail();
+            ->where('id', $id)
+            ->firstOrFail();
 
         $currentVote->update($request->except('end_at'));
         return redirect()->route('voting.index');
@@ -146,11 +128,10 @@ class VotingController extends Controller
 
     public function start(Request $request, $id)
     {
-        $currentVote = Voting::where( fn($q) => (
-            $q->where('end_at', '>', Carbon::now()->timestamp)
-            ->orWhereNull('end_at')   
+        $currentVote = Voting::where(fn ($q) => ($q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')
         ))->where('id', $id)
-        ->firstOrFail();
+            ->firstOrFail();
 
         $currentVote->update(['end_at' => Carbon::parse($request->end_at)->timestamp]);
         return back();
@@ -159,11 +140,10 @@ class VotingController extends Controller
 
     public function end($id)
     {
-        $currentVote = Voting::where( fn($q) => (
-            $q->where('end_at', '>', Carbon::now()->timestamp)
-            ->orWhereNull('end_at')   
+        $currentVote = Voting::where(fn ($q) => ($q->where('end_at', '>', Carbon::now()->timestamp)
+            ->orWhereNull('end_at')
         ))->where('id', $id)
-        ->firstOrFail();
+            ->firstOrFail();
 
         $currentVote->update([
             'end_at' => Carbon::now()->timestamp

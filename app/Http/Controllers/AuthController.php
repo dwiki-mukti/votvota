@@ -9,52 +9,59 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-	public function index()
-	{
-		return view('auth.login');
-	}
+    public function index()
+    {
+        return view('auth.login');
+    }
 
 
-	public function store(Request $request)
-	{
-		# validate
+    public function store(Request $request)
+    {
+        # validate
         $request->validate([
             "email" => "required|string",
             "password" => "required|string"
         ]);
 
-		# get user
-		$user = User::where([
-			['email', $request->email],
-			['role', 'Admin']
-		])->first();
+        # get user
+        $user = User::where([
+            ['email', $request->email],
+            ['role', 'Admin']
+        ])->first();
 
-		#check user
+        #check user
         if (!$user) {
             return back()
                 ->withInput()
                 ->withErrors(['email' => 'User tidak ditemukan.']);;
         }
 
-		# check password
+        # check password
         if (!Hash::check($request->password, $user->password)) {
             return back()
                 ->withInput()
                 ->withErrors(['password' => 'Password salah!']);;
         }
 
-		#add session
+        #add session
         Auth::login($user, $request->remember);
 
-		#return
+        #return
         return redirect()->route('voting.index');
-	}
+    }
 
 
-	public function logout(Request $request)
-	{
+    public function logout(Request $request)
+    {
+        $role = Auth::user()->role;
+
         $request->session()->flush();
         Auth::logout();
-        return redirect()->route('login.index');
-	}
+
+        if ($role == 'Admin') {
+            return redirect()->route('login.index');
+        } else {
+            return redirect()->route('main.index');
+        }
+    }
 }

@@ -14,15 +14,12 @@ class CreateVotersTable extends Migration
     public function up()
     {
         Schema::create('voters', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('student_id');
             $table->unsignedBigInteger('voting_id');
-            $table->unsignedBigInteger('candidate_id')->nullable();
-            $table->text('token')->unique();
-            $table->timestamps();
-            $table->softDeletes();
+            // $table->unsignedBigInteger('student_id')->nullable();
 
             $table->foreign('voting_id')->references('id')->on('votings')->onDelete('CASCADE')->onUpdate('CASCADE');
-            $table->foreign('candidate_id')->references('id')->on('candidates')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('CASCADE')->onUpdate('CASCADE');
         });
     }
 

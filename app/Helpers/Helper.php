@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+use Carbon\Carbon;
 
 function Token($length)
 {
@@ -9,4 +11,9 @@ function Token($length)
 		$string .= $data{$pos};
 	}
 	return $string;
+}
+
+function DateDetail($date)
+{
+	return Carbon::parse($date)->format('d-M-Y H:i');
 }

@@ -13,6 +13,6 @@ class Student extends Model
         'user_id',
         'nisn',
         'name',
-        'batch'
+        'thn_lulus'
     ];
 }

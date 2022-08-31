@@ -22,6 +22,7 @@ class CreateCandidatesTable extends Migration
             $table->string('co_leader_image');
             $table->text('visi')->nullable();
             $table->text('misi')->nullable();
+            $table->bigInteger('total_votes')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

@@ -7,27 +7,19 @@
                 <a href="{{ Route('voting.edit', $currentVote->id) }}"><i class="fas fa-edit"></i></a>
             </div>
             <div class="mb-2">{{ $currentVote->description }}</div>
-            <div>
-                <div class="mb-1">
-                    <a href="{{ Route('voting.show', 'download-token') }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-file-download"></i>
-                        <span>Unduh Token Pemilih</span>
-                    </a>
-                </div>
-                <div class="d-flex justify-content-center" style="gap: .2rem">
-                    <button {{ ($currentVote->Rcandidate->count() < 2) ? 'disabled' : '' }} class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#edit-voting">
-                        <i class="fas fa-play"></i>
-                        <span>Mulai</span>
+            <div class="d-flex justify-content-center" style="gap: .2rem">
+                <button {{ ($currentVote->Rcandidate->count() < 2) ? 'disabled' : '' }} class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#edit-voting">
+                    <i class="fas fa-play"></i>
+                    <span>Mulai</span>
+                </button>
+                <form action="{{ Route('voting.destroy', $currentVote->id) }}" method="POST" onsubmit="return confirm('Data setup voting yang dihapus tidak dapat dikembalikan. Tetap hapus?')">
+                    @csrf
+                    @method('delete')
+                    <button class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Batalkan</span>
                     </button>
-                    <form action="{{ Route('voting.destroy', $currentVote->id) }}" method="POST" onsubmit="return confirm('Data setup voting yang dihapus tidak dapat dikembalikan. Tetap hapus?')">
-                        @csrf
-                        @method('delete')
-                        <button class="btn btn-sm btn-outline-danger">
-                            <i class="fas fa-trash-alt"></i>
-                            <span>Batalkan</span>
-                        </button>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -39,14 +31,14 @@
         <div class="table-responsive">
             <table class="table table-bordered text-nowrap">
                 <thead>
-                <tr>
-                    <th style="width: 10px">#</th>
-                    <th>Kandidat</th>
-                    <th style="width: 100px;">Opsi</th>
-                </tr>
+                    <tr>
+                        <th style="width: 10px">#</th>
+                        <th>Kandidat</th>
+                        <th style="width: 100px;">Opsi</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach ($currentVote->Rcandidate as $key => $candidate)
+                    @foreach ($currentVote->Rcandidate as $key => $candidate)
                     <tr>
                         <td>{{ $key+1 }}.</td>
                         <td>{{ $candidate->Rleader->name ?? null }} & {{ $candidate->RcoLeader->name ?? null }}</td>
@@ -54,7 +46,7 @@
                             @include('components.btnCrud', ['actions'=>['edit', 'delete'], 'id'=>$candidate->id, 'path'=> 'candidate'])
                         </td>
                     </tr>
-                @endforeach
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -62,8 +54,7 @@
 </div>
 
 <!-- modal -->
-@if (!($currentVote->Rcandidate->count() < 2))
-<div class="modal fade" id="edit-voting">
+@if (!($currentVote->Rcandidate->count() < 2)) <div class="modal fade" id="edit-voting">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -86,6 +77,6 @@
             </form>
         </div>
     </div>
-</div>
-@endif
-<!-- end modal -->
+    </div>
+    @endif
+    <!-- end modal -->

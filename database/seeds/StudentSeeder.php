@@ -33,7 +33,6 @@ class StudentSeeder extends Seeder
                 'user_id' => $user->id,
                 'nisn' => rand(100000, 99999999),
                 'name' => $faker->name,
-                'batch' => 1
             ]);
         }
     }

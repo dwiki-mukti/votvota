@@ -36,12 +36,12 @@
           <img src="{{ asset('frontend/images/LOGOSTMJ.png') }}" alt="AdminLTE Logo" class="brand-image img-circle">
           <span class="brand-text font-weight-light">SMKN 1 JENANGAN</span>
         </a>
-        @if(Session::has('token'))
+        @auth
         <div class="btn btn-sm btn-outline-danger px-3" style="border-radius: 99rem;" data-toggle="modal" data-target="#logoutModal">
           <i class="fas fa-power-off"></i>
           <span>logout</span>
         </div>
-        @endif
+        @endauth
       </div>
     </nav>
 
@@ -59,13 +59,12 @@
     </footer>
   </div>
 
-  @if(Session::has('token'))
+  @auth
   <div class="modal fade" id="logoutModal">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form action="{{ Route('main.destroy', 'token') }}" method="POST" class="text-center">
+        <form action="{{ Route('logout') }}" method="POST" class="text-center">
           @csrf
-          @method('delete')
           <div class="modal-body">
             <div class="my-4">Anda Benar-benar ingin logout dari akun in?</div>
           </div>
@@ -77,7 +76,7 @@
       </div>
     </div>
   </div>
-  @endif
+  @endauth
 
   <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -85,7 +84,7 @@
   <script src="{{ asset('adminlte/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
   <script src="{{ asset('adminlte/plugins/toastr/toastr.min.js') }}"></script>
 
-  @if(Session::has('success'))
+  @if(Session::has('error') || Session::has('success'))
   <script>
     $(function() {
       var Toast = Swal.mixin({
@@ -95,8 +94,8 @@
         timer: 3000
       });
       Toast.fire({
-        icon: 'success',
-        title: "{{ Session::get('success') }}"
+        icon: "{{ Session::get('error') ? 'error' : 'success'}}",
+        title: "{{ Session::get('error') ?? Session::get('success') }}"
       })
     })
   </script>

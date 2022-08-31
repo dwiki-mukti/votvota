@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Voter;
 use App\Voting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
@@ -19,12 +20,10 @@ class ClientController extends Controller
     public function index()
     {
         $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
-                        ->latest('id')
-                        ->first();
-        if (!$currentVote) {
-            return view('client.unset');
-        }
-        return view('client.verify', compact('currentVote'));
+            ->latest('id')
+            ->first();
+        if (!$currentVote) return view('client.unset');
+        return view('client.login', compact('currentVote'));
     }
 
     /**
@@ -45,22 +44,32 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
-                        ->latest('id')
-                        ->first();
-        $token = Voter::where([
-            ['voting_id', $currentVote->id],
-            ['token', $request->token]
+        # validate
+        $request->validate([
+            "email" => "required|string",
+            "password" => "required|string"
+        ]);
+
+        # get user
+        $user = User::where([
+            ['email', $request->email],
+            ['role', 'Siswa']
         ])->first();
 
-        if (!$token) {
-            return back()->with(['message' => 'Token tidak valid!']);
+        #check user
+        if (!$user) {
+            return back()->withInput()->withErrors(['email' => 'User tidak ditemukan.']);
         }
-        if ($token->candidate_id) {
-            return back()->with(['message' => 'Token ini sudah digunakan untuk memilih!']);
+
+        # check password
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withInput()->withErrors(['password' => 'Password salah!']);
         }
-        
-        Session::put('token', Crypt::encryptString($request->token));
+
+        #add session
+        Auth::login($user, $request->remember);
+
+        #return
         return redirect()->route('main.show', 'voting');
     }
 
@@ -72,13 +81,33 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        if ($id != 'voting') {
-            return abort(404);
+        # get data
+        $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)->latest('id')->first();
+        $voter = Voter::where('student_id', Auth::user()->student->id)->first();
+
+        # route voting
+        if ($id == 'voting') {
+            # check voter
+            if ($voter && ($voter->voting_id >= $currentVote->id)) {
+                return redirect()->route('main.show', 'done');
+            }
+
+            #return
+            return view('client.voting', compact('currentVote'));
         }
-        $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)
-                        ->latest('id')
-                        ->first();
-        return view('client.voting', compact('currentVote'));
+
+        # route done
+        if ($id == 'done') {
+            # check voter
+            if (!($voter && ($voter->voting_id >= $currentVote->id))) {
+                return redirect()->route('main.show', 'voting');
+            }
+
+            #return
+            return view('client.success');
+        }
+
+        return abort(404);
     }
 
     /**
@@ -101,28 +130,34 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($id != 'voting') {
-            return abort(404);
+        # check route
+        if ($id != 'voting') return abort(404);
+
+        # check vote aktif
+        $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)->latest('id')->first();
+        if (!$currentVote) {
+            Auth::logout();
+            return redirect()->route('main.index');
         }
 
-        try {
-            $token = Crypt::decryptString(Session::get('token'));
-            $currentVote = Voting::where('end_at', '>', Carbon::now()->timestamp)->latest('id')->first();
-            $voter = Voter::where([
-                ['token', $token],
-                ['voting_id', $currentVote->id]
-            ])->first();
-        } catch (\Throwable $th) {
-            $voter = '';
-        }
-        Session::forget('token');
-
+        # check voter
+        $voter = Voter::where('student_id', Auth::user()->student->id)->first();
         if (!$voter) {
-            return redirect()->route('main.index')->with(['message' => 'Mohon validasi ulang!']);
+            $voter = new Voter;
+            $voter->student_id = Auth::user()->student->id;
+        } elseif ($voter->voting_id >= $currentVote->id) {
+            return redirect()->route('main.show', 'done')->with(['error' => 'Akun ini sudah digunakan untuk memilih!']);
         }
-        $voter->update($request->only(['candidate_id']));
 
-        return redirect()->route('main.index')->with(['success' => 'Terimakasih atas partisipasinya!']);
+        # update status voter
+        $voter->voting_id = $currentVote->id;
+        $voter->save();
+
+        # todo redis add count vote
+        // code...
+
+        # return
+        return redirect()->route('main.show', 'done')->with(['success' => 'Terimakasih atas partisipasinya!']);
     }
 
     /**
@@ -133,10 +168,6 @@ class ClientController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($id != 'token') {
-            return abort(404);
-        }
-        $request->session()->forget('token');
-        return redirect()->route('main.index');
+        // 
     }
 }

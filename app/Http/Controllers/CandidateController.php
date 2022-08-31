@@ -27,7 +27,7 @@ class CandidateController extends Controller
      */
     public function create()
     {
-        $students = Student::whereBetween('batch', [1, 3])->get();
+        $students = Student::whereNull('thn_lulus')->get();
         return view('candidate.setData', compact('students'));
     }
 
@@ -94,7 +94,7 @@ class CandidateController extends Controller
         ->where('id', $id)
         ->firstOrFail();
 
-        $students = Student::whereBetween('batch', [1, 3])->get();
+        $students = Student::whereNull('thn_lulus')->get();
         return view('candidate.setData', compact('candidate', 'students'));
     }
 

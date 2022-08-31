@@ -1,5 +1,5 @@
 <style>
-    .legend-bar-vote{
+    .legend-bar-vote {
         width: 40px;
         overflow: hidden;
         color: #fff;
@@ -17,7 +17,7 @@
     <div class="col-md-6">
         <div class="mb-4">
             <h5 class="m-0">Berakhir pada:</h5>
-            <div class="mb-1">{{ $currentVote->end_at }}</div>
+            <div class="mb-1">{{ DateDetail($currentVote->end_at) }}</div>
             <form action="{{ Route('voting.end', $currentVote->id) }}" method="POST" onsubmit="return confirm('Anda benar-benar ingin mengakhiri voting ini?')">
                 @csrf
                 @method('delete')
@@ -31,10 +31,10 @@
             <h5 class="m-0">Legends</h5>
             <div>
                 @foreach ($currentVote->Rcandidate as $key => $candidate)
-                    <div class="d-flex align-items-center mb-2" style="gap: .3rem">
-                        <div class="legend-bar-vote" style="background-color: {{ colors()[$key] }}"></div>
-                        <span>{{ $candidate->title }}</span>
-                    </div>
+                <div class="d-flex align-items-center mb-2" style="gap: .3rem">
+                    <div class="legend-bar-vote" style="background-color: {{ colors()[$key] }}"></div>
+                    <span>{{ $candidate->title }}</span>
+                </div>
                 @endforeach
                 <div class="d-flex align-items-center mb-2" style="gap: .3rem">
                     <div class="legend-bar-vote" style="background-color: {{ colors()[$key+1] }}"></div>
@@ -48,13 +48,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     new Chart(
-        document.getElementById('chart'),
-        {
+        document.getElementById('chart'), {
             type: 'pie',
             data: {
-                labels: {!! json_encode($currentVote->data_charts['label']) !!},
+                labels: {!! json_encode(array_merge($currentVote->Rcandidate->pluck('title')->toArray(), ['Undefined'])) !!},
                 datasets: [{
-                    data: {!! json_encode($currentVote->data_charts['count_votes']) !!},
+                    data: {!! json_encode(array_merge($currentVote->Rcandidate->pluck('total_votes')->toArray(), [$currentVote->golput])) !!},
                     backgroundColor: {!! json_encode(colors()) !!},
                     hoverOffset: 4
                 }]
@@ -62,7 +61,7 @@
             options: {
                 plugins: {
                     legend: {
-                    display: false
+                        display: false
                     }
                 }
             }

@@ -17,7 +17,7 @@ class Roles
     public function handle($request, Closure $next, ...$roles)
     {
         if (!in_array(Auth::user()->role, $roles)) {
-            return redirect()->route('login.index');
+            return redirect()->route('home');
         }
         return $next($request);
     }

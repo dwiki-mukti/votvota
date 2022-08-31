@@ -3,16 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Voter extends Model
 {
-    use SoftDeletes;
-
-
+    public $timestamps = false;
+    protected $primaryKey = 'student_id';
+    public $incrementing = false;
     protected $fillable = [
         'voting_id',
-        'candidate_id',
-        'token'
+        'student_id',
     ];
 }
