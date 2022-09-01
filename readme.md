@@ -9,11 +9,16 @@
   <a href="#license">License</a>
 </p>
 
-![sample page](https://raw.githubusercontent.com/2-Q/pemilihan-osis/v3/public/image/sample.png)
+![sample page](https://raw.githubusercontent.com/2-Q/votvota/v3/public/image/sample.png)
 
 ## About
 
 Voting for the election of the student council leader in the school environment is actually a simple thing and does not require complicated regulations. But in reality the implementation of this activity looks very complicated. Therefore, Votvota is here to bring convenience in voting to the final vote calculation.
+
+## Technology
+
+[![Laravel][Laravel.com]][Laravel-url] [![Redis][Redis.io]][Redis-url] [![Bootstrap][Bootstrap.com]][Bootstrap-url] [![JQuery][JQuery.com]][JQuery-url]
+
 
 ## Key Features
 
@@ -27,7 +32,7 @@ Voting for the election of the student council leader in the school environment 
   - View voting history
 * Student
   - Auth
-  - Vote to candidate
+  - Vote
 
 ## How To Use
 
@@ -57,6 +62,18 @@ $ php artisan serve
 ## License
 
 The MIT License (MIT) 2020 - [Dwiki Mukti](https://github.com/2-Q/).
+
+
+
+
+[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
+[Laravel-url]: https://laravel.com
+[Redis.io]: https://img.shields.io/badge/Redis-e10000?style=for-the-badge&logo=redis&logoColor=white
+[Redis-url]: https://redis.io/
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[JQuery-url]: https://jquery.com 
 
 
 
