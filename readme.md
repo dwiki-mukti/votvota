@@ -9,7 +9,7 @@
   <a href="#license">License</a>
 </p>
 
-![screenshot](myFolder/image/sample.png)
+![sample page](https://raw.githubusercontent.com/2-Q/pemilihan-osis/v3/public/image/sample.png)
 
 ## About
 
