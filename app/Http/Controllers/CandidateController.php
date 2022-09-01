@@ -54,12 +54,12 @@ class CandidateController extends Controller
         if ($request->hasFile('leader_image')) {
             $image_name =  date("Ymdhis") . "_leader_image." . $request->file('leader_image')->extension();
             $request->file('leader_image')->storeAs('/images/candidate/leader_image', $image_name, 'public');
-            $val["leader_image"] = 'images/news/leader_image/' . $image_name;
+            $val["leader_image"] = 'images/candidate/leader_image/' . $image_name;
         }
         if ($request->hasFile('co_leader_image')) {
             $image_name =  date("Ymdhis") . "_co_leader_image." . $request->file('co_leader_image')->extension();
             $request->file('co_leader_image')->storeAs('/images/candidate/co_leader_image', $image_name, 'public');
-            $val["co_leader_image"] = 'images/news/co_leader_image/' . $image_name;
+            $val["co_leader_image"] = 'images/candidate/co_leader_image/' . $image_name;
         }
         $val['voting_id'] = $currentVote->id;
         $candidate->create($val);
@@ -125,12 +125,12 @@ class CandidateController extends Controller
         if ($request->hasFile('leader_image')) {
             $image_name =  date("Ymdhis") . "_leader_image." . $request->file('leader_image')->extension();
             $request->file('leader_image')->storeAs('/images/candidate/leader_image', $image_name, 'public');
-            $val["leader_image"] = 'images/news/leader_image/' . $image_name;
+            $val["leader_image"] = 'images/candidate/leader_image/' . $image_name;
         }
         if ($request->hasFile('co_leader_image')) {
             $image_name =  date("Ymdhis") . "_co_leader_image." . $request->file('co_leader_image')->extension();
             $request->file('co_leader_image')->storeAs('/images/candidate/co_leader_image', $image_name, 'public');
-            $val["co_leader_image"] = 'images/news/co_leader_image/' . $image_name;
+            $val["co_leader_image"] = 'images/candidate/co_leader_image/' . $image_name;
         }
 
         $candidate->update($val);

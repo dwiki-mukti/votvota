@@ -12,9 +12,7 @@
     </div>
     <footer id="footer">
         <div style="position: absolute; bottom: 30px; left: 50%; transform: translate(-50%, 0);">
-            &copy;<script>
-                document.write(new Date().getFullYear());
-            </script> by Wongedanyongkru
+            &copy;2020 by Dwiki Mukti
         </div>
     </footer>
 </body>

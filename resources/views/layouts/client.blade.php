@@ -52,9 +52,7 @@
 
     <footer id="footer">
       <div style="text-align: center;" class="mb-3 mt-5">
-        &copy;<script>
-          document.write(new Date().getFullYear());
-        </script> by Wongedanyongkru
+        &copy;2020 by Dwiki Mukti
       </div>
     </footer>
   </div>

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Candidate extends Model
 {
@@ -20,7 +21,12 @@ class Candidate extends Model
 
     public function getTitleAttribute()
     {
-        return ($this->Rleader->name ?? null) . ' & ' .( $this->Rleader->name ?? null);
+        return ($this->Rleader->name ?? null) . ' & ' . ($this->Rleader->name ?? null);
+    }
+
+    public function getLeaderImageUrlAttribute()
+    {
+        return asset(Storage::url($this->leader_image));
     }
 
     public function Rleader()
@@ -49,5 +55,4 @@ class Candidate extends Model
         'misi',
         'total_votes'
     ];
-
 }

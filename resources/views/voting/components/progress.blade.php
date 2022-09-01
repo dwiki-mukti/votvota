@@ -18,6 +18,7 @@
         <div class="mb-4">
             <h5 class="m-0">Berakhir pada:</h5>
             <div class="mb-1">{{ DateDetail($currentVote->end_at) }}</div>
+            @if($currentVote->end_at > \Carbon\Carbon::now()->timestamp)
             <form action="{{ Route('voting.end', $currentVote->id) }}" method="POST" onsubmit="return confirm('Anda benar-benar ingin mengakhiri voting ini?')">
                 @csrf
                 @method('delete')
@@ -26,6 +27,7 @@
                     <span>Akhiri Sekarang</span>
                 </button>
             </form>
+            @endif
         </div>
         <div class="mb-4">
             <h5 class="m-0">Legends</h5>

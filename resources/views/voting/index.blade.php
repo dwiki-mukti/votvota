@@ -32,7 +32,7 @@
                         @else
                             <div class="row justify-content-center">
                                 <div class="col-md-6 my-4 text-center">
-                                    <img src="" class="w-100 mb-1" style="height: 200px">
+                                    <img src="{{ asset('admin_image/undraw_add_notes_re_ln36.svg') }}" class="w-100 mb-1" style="height: 200px">
                                     <h5 class="mb-4">Tidak ada pemungutan suara yang berlangsung.</h5>
                                     <a href="{{ Route('voting.create') }}" class="btn btn-success">
                                         <i class="fas fa-user mr-1"></i>

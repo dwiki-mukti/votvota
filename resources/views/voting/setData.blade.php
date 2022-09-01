@@ -28,7 +28,7 @@
                     <div class="card-body">
                         <div class="row justify-content-center">
                             <div class="col-md-6">
-                                <img src="" class="w-100 mb-1" style="height: 200px">
+                                <img src="{{ asset('admin_image/undraw_working_re_ddwy.svg') }}" class="w-100 mb-1" style="height: 200px">
                             </div>
                             <div class="col-md-6">
                                 <form action="{{ isset($currentVote) ? Route('voting.update', $currentVote->id) : Route('voting.store') }}" method="POST" onsubmit="return confirm('Buat pemungutan suara ini?')">

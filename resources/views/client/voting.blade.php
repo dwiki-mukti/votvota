@@ -10,7 +10,7 @@
             @foreach($currentVote->Rcandidate as $candidate)
             <div class="col-lg-4">
                 <div class="cardis">
-                    <div class="bg-image bg-profile mx-auto mt-4" style="width: 130px; box-shadow: 0px 0px 15px rgba(0,0,0,0.2); border: 7px solid #efb10a;"></div>
+                    <div class="bg-image bg-profile mx-auto mt-4" style="width: 130px; box-shadow: 0px 0px 15px rgba(0,0,0,0.2); border: 7px solid #efb10a; background-image: url('{{ $candidate->leader_image_url }}');"></div>
                     <h5 style="margin: 40px 20px 20px 20px; text-align: center;">{{$candidate->Rleader->name}} & <br> {{$candidate->RcoLeader->name}}</h5>
                     <div class="desc">
                         <p style="margin-bottom: .4rem;"><strong>VISI.</strong> {{$candidate->visi}}</p>

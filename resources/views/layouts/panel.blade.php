@@ -34,9 +34,7 @@
 
         <footer class="main-footer">
             <div class="text-right">
-                &copy;<script>
-                    document.write(new Date().getFullYear());
-                </script> by Wongedanyongkru
+                &copy;2020 by Dwiki Mukti
             </div>
         </footer>
     </div>
